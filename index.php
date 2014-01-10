@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -75,47 +76,48 @@
 
 		$(window).resize(function(){
 			map.setCenter(center);
-		});	
+		});
 		</script>
 
-	</head>
-	<body>
+		</head>
+		<body>
 
-<!-- Setup Facebook Integraton -->
+		<!-- Setup Facebook Integraton -->
 		<div id="fb-root"></div>
+		
 		<script>
-		window.fbAsyncInit = function() {
-	    // init the FB JS SDK
-	    FB.init({
-	      appId      : '681219568576604',                    // App ID from the app dashboard
-	      status     : true,                                 // Check Facebook Login status
-	      xfbml      : true                                  // Look for social plugins on the page
-	  });
+			window.fbAsyncInit = function() {
+		    // init the FB JS SDK
+		   	FB.init({
+		      appId      : '681219568576604',                    // App ID from the app dashboard
+		      status     : true,                                 // Check Facebook Login status
+		      xfbml      : true                                  // Look for social plugins on the page
+		  	});
 
-	    // Additional initialization code such as adding Event Listeners goes here
-	};
+	    	// Additional initialization code such as adding Event Listeners goes here
+		       
+			};
 
-	  // Load the SDK asynchronously
-	  (function(){
-	     // If we've already installed the SDK, we're done
-	     if (document.getElementById('facebook-jssdk')) {return;}
+		  // Load the SDK asynchronously
+		  (function(){
+		     // If we've already installed the SDK, we're done
+		     if (document.getElementById('facebook-jssdk')) {return;}
 
-	     // Get the first script element, which we'll use to find the parent node
-	     var firstScriptElement = document.getElementsByTagName('script')[0];
+		     // Get the first script element, which we'll use to find the parent node
+		     var firstScriptElement = document.getElementsByTagName('script')[0];
 
-	     // Create a new script element and set its id
-	     var facebookJS = document.createElement('script'); 
-	     facebookJS.id = 'facebook-jssdk';
+		     // Create a new script element and set its id
+		     var facebookJS = document.createElement('script'); 
+		     facebookJS.id = 'facebook-jssdk';
 
-	     // Set the new script's source to the source of the Facebook JS SDK
-	     facebookJS.src = "//connect.facebook.net/en_US/all.js";
+		     // Set the new script's source to the source of the Facebook JS SDK
+		     facebookJS.src = "//connect.facebook.net/en_US/all.js";
 
-	     // Insert the Facebook JS SDK into the DOM
-	     firstScriptElement.parentNode.insertBefore(facebookJS, firstScriptElement);
+		     // Insert the Facebook JS SDK into the DOM
+		     firstScriptElement.parentNode.insertBefore(facebookJS, firstScriptElement);
 		 }());
-	  </script>
-<!-- End Setup Facebook Integraton -->
 
+	  </script>
 
 	  <!-- Navbar -->
 	  <div class="navbar navbar-default navbar-fixed-top">
@@ -153,7 +155,39 @@
 	  	<div class="col-sm-9">
 	  		<div id="map_canvas" class=""></div>
 	  	</div>
+
 	  	<div class="col-sm-3" id="friend-list">
+
+	 <!-- 	<button id="Login" class="fb-login-button"> </button> -->
+	 	<button id="Login" class="btn btn-default"> Log In </button> 
+	  	<script>
+	  		function login() {
+				FB.login(function(response) {
+	  			if (response.authResponse) {
+	    		 	console.log('Welcome!  Fetching your information.... ');
+	     			FB.api('/me', function(response) {
+	       			console.log('Good to see you, ' + response.name + '.');
+	     			});
+	   			} else {
+	    			console.log('User cancelled login or did not fully authorize.');
+	   			}
+	 			});
+			}
+			//-Set Log In button:
+			document.getElementById("Login").onclick = login;
+		</script>
+
+		<!-- Show Friends who use CouchIt -->
+		<script>(function(d, s, id) {
+  			var js, fjs = d.getElementsByTagName(s)[0];
+		  	if (d.getElementById(id)) return;
+		  	js = d.createElement(s); js.id = id;
+		  	js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=681219568576604";
+		  	fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+	  	</script>
+		<div class="fb-login-button" data-width="50" data-height="100" data-max-rows="5" data-show-faces="true"></div>
+
 	  		<h2> Friend List Here: </h2>
 	  		<ul>
 	  			<li> Friend 1 </li>
@@ -165,4 +199,4 @@
 	  	</div>
 	  </div>
 	</body>
-	</html>
+</html>

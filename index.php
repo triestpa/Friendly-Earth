@@ -1,4 +1,3 @@
-<?php session_start(); ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -158,8 +157,10 @@
 
 	  	<div class="col-sm-3" id="friend-list">
 
-	 <!-- 	<button id="Login" class="fb-login-button"> </button> -->
 	 	<button id="Login" class="btn btn-default"> Log In </button> 
+	 	<button id="Logout" class="btn btn-default"> Log Out </button> 
+	 	<button id="Friends" class="btn btn-default"> Friend Test</button> 
+
 	  	<script>
 	  		function login() {
 				FB.login(function(response) {
@@ -167,14 +168,30 @@
 	    		 	console.log('Welcome!  Fetching your information.... ');
 	     			FB.api('/me', function(response) {
 	       			console.log('Good to see you, ' + response.name + '.');
+	       			console.log('Your location is ' + response.location.name + '.');
 	     			});
 	   			} else {
 	    			console.log('User cancelled login or did not fully authorize.');
 	   			}
-	 			});
+	 			}, {scope: 'user_location'});
 			}
 			//-Set Log In button:
 			document.getElementById("Login").onclick = login;
+			
+			document.getElementById("Logout").onclick = function(){
+				FB.logout(function(response) {
+					console.log("User is logged out");
+				});
+			};
+
+			function friendtest(){
+	  			FB.api('me/friends'), function(response){
+	  				console.log('These are your friends: ');
+
+	  			}
+	  		document.getElementById("Friends").onclick = friendtest;
+	  		}
+
 		</script>
 
 		<!-- Show Friends who use CouchIt -->

@@ -168,12 +168,12 @@
 	    		 	console.log('Welcome!  Fetching your information.... ');
 	     			FB.api('/me', function(response) {
 	       			console.log('Good to see you, ' + response.name + '.');
-	       			console.log('Your location is ' + response.location.name + '.');
+	       			console.log('Your location is ' + response.location.name  + '.');
 	     			});
 	   			} else {
 	    			console.log('User cancelled login or did not fully authorize.');
 	   			}
-	 			}, {scope: 'user_location'});
+	 			}, {scope: 'user_location, friends_location'});
 			}
 			//-Set Log In button:
 			document.getElementById("Login").onclick = login;
@@ -181,16 +181,22 @@
 			document.getElementById("Logout").onclick = function(){
 				FB.logout(function(response) {
 					console.log("User is logged out");
-				});
-			};
+					});
+				};
 
-			function friendtest(){
-	  			FB.api('me/friends'), function(response){
+			function friendtest() {
+	  			FB.api('me/friends', function(response) {
 	  				console.log('These are your friends: ');
-
-	  			}
-	  		document.getElementById("Friends").onclick = friendtest;
+	  				$.each(response.data,function(index,friend) {
+                		console.log(friend.name + ' has id:' + friend.id);
+                		FB.api(friend.id, function(response) {
+                			console.log(friend.name + '  lives in  ' + response.location.name + '.');
+                		});
+            		});
+	  			});
 	  		}
+	  		
+	  		document.getElementById("Friends").onclick = friendtest;
 
 		</script>
 

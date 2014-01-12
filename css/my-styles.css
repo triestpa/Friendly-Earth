@@ -22,3 +22,14 @@ body {
 		width: 100%;
 		height: 500px;
 	}
+
+.testButtons {
+	margin-top: 10px;
+}
+
+#friendList {
+	margin-top: 10px;
+	margin-right: 40px;
+	overflow: scroll;
+    height: 425px;
+}

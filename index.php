@@ -157,9 +157,10 @@
 
 	  	<div class="col-sm-3" id="friend-list">
 
-	 	<button id="Login" class="btn btn-default"> Log In </button> 
-	 	<button id="Logout" class="btn btn-default"> Log Out </button> 
-	 	<button id="Friends" class="btn btn-default"> Friend Test</button> 
+	 	<button id="Login" class="btn btn-default testButtons"> Log In </button> 
+	 	<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 
+	 	<button id="LoadList" class="btn btn-default testButtons"> Load List</button> 
+
 
 	  	<script>
 	  		function login() {
@@ -184,41 +185,26 @@
 					});
 				};
 
-			function friendtest() {
+	  		function loadFriendList() {
+	  			var friendList_HTML = "";
+
 	  			FB.api('me/friends', function(response) {
-	  				console.log('These are your friends: ');
 	  				$.each(response.data,function(index,friend) {
-                		console.log(friend.name + ' has id:' + friend.id);
                 		FB.api(friend.id, function(response) {
+                			friendList_HTML += "<a href=\"#\" class=\"list-group-item\">" + friend.name + '  lives in  ' + response.location.name + '.' + "</a>";
                 			console.log(friend.name + '  lives in  ' + response.location.name + '.');
+	  						$("#friendList").html(friendList_HTML);
                 		});
             		});
 	  			});
 	  		}
-	  		
-	  		document.getElementById("Friends").onclick = friendtest;
 
+	  		document.getElementById("LoadList").onclick = loadFriendList;
+			
 		</script>
 
-		<!-- Show Friends who use CouchIt -->
-		<script>(function(d, s, id) {
-  			var js, fjs = d.getElementsByTagName(s)[0];
-		  	if (d.getElementById(id)) return;
-		  	js = d.createElement(s); js.id = id;
-		  	js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=681219568576604";
-		  	fjs.parentNode.insertBefore(js, fjs);
-			}(document, 'script', 'facebook-jssdk'));
-	  	</script>
-		<div class="fb-login-button" data-width="50" data-height="100" data-max-rows="5" data-show-faces="true"></div>
+	  	<div class="list-group" id ="friendList"></div>
 
-	  		<h2> Friend List Here: </h2>
-	  		<ul>
-	  			<li> Friend 1 </li>
-	  			<li> Friend 2 </li>
-	  			<li> Friend 3 </li>
-	  			<li> Friend 4 </li>
-	  			<li> Friend 5 </li>
-	  		</ul>
 	  	</div>
 	  </div>
 	</body>

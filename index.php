@@ -160,7 +160,8 @@
 	 	<button id="Login" class="btn btn-default testButtons"> Log In </button> 
 	 	<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 
 	 	<button id="LoadList" class="btn btn-default testButtons"> Load List</button> 
-	 	<button id="LoadLocation" class="btn btn-default testButtons"> Load Location</button> 
+	 	<button id="LoadMyLocation" class="btn btn-default testButtons"> Load My Location</button> 
+	 	<button id="LoadFriendsLocations" class="btn btn-default testButtons"> Load Friends Locations</button> 
 
 
 
@@ -203,38 +204,59 @@
 
 	  		document.getElementById("LoadList").onclick = loadFriendList;
 
-	  		function getLocationPoints() {
+	  		function getMyLocationPoints() {
 	  			FB.api('/me', function(response) {
 	       			console.log('Hello, ' + response.name + '.'); 
 	       			var location = response.location.name;       			
 	       			console.log('Your location is ' +  location + '.');
 
-	       			var queryURL = "http://api.geonames.org/searchJSON?q=Grinnell,%20IA&maxRows=10&username=triestpa";
+	       			var queryURL = "http://api.geonames.org/searchJSON?q=" + location + "&maxRows=10&username=triestpa";
 	       			
 	       			$.getJSON(queryURL)
 	       			.done(function( data ){
 	       				console.log(data);
-	       				console.log(data.geonames[0]);
+	       				var firstmatch = data.geonames[0];
+	       				console.log("Name: " + firstmatch.name);
+	       				console.log("Lat: " + firstmatch.lat);
+	       				console.log("Lng: " + firstmatch.lng);
 	       			})
 	       			.fail(function( jqxhr, textStatus, error ) {
     					var err = textStatus + ", " + error;
     					console.log( "Request Failed: " + err );
 					});
-
-	       			/*
-	       			var xmlHttp = null;
-    				xmlHttp = new XMLHttpRequest();
-    				xmlHttp.open( "GET", queryURL, false );
-    				xmlHttp.send( null );
-
-    				var respJSON = xmlHttp.;
-    				console.log(respJSON.geonames.geoname[0]);
-   					//console.log(xmlHttp.responseText);
-   					*/
-	     			});
+	     		});
 	  		}
 
-	     	document.getElementById("LoadLocation").onclick = getLocationPoints;
+	     	document.getElementById("LoadMyLocation").onclick = getMyLocationPoints;
+
+			function getFriendsLocationsPoints() {
+				  			FB.api('me/friends', function(response) {
+	  				$.each(response.data,function(index,friend) {
+                		FB.api(friend.id, function(response) {
+							var location = response.location.name;       			
+	       					console.log(response.name + 'is in' +  location + '.');
+
+	       					var queryURL = "http://api.geonames.org/searchJSON?q=" + location + "&maxRows=10&username=triestpa";
+                			$.getJSON(queryURL)
+			       				.done(function( data ){
+			       					console.log(data);
+			       					var firstmatch = data.geonames[0];
+			       					console.log("Name: " + firstmatch.name);
+			       					console.log("Lat: " + firstmatch.lat);
+			       					console.log("Lng: " + firstmatch.lng);
+			       					})
+			       				.fail(function( jqxhr, textStatus, error ) {
+		    						var err = textStatus + ", " + error;
+		    						console.log( "Request Failed: " + err );
+									});
+                		});
+            		});
+	  			});
+			}
+
+	     	document.getElementById("LoadFriendsLocations").onclick = getFriendsLocationsPoints;
+
+
 
 		</script>
 

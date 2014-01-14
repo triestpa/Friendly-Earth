@@ -10,12 +10,11 @@
 	<link href="css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
 	<link href="css/my-styles.css" rel="stylesheet" media="screen">
 
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5jiD2pw8yK6dyh1brz_0jEBcjb7AzcUg&amp;sensor=false"></script>
+	<script src="js/markerclusterer_compiled.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/scripts.js"></script>
 
-
-	<!-- Load the google map api -->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5jiD2pw8yK6dyh1brz_0jEBcjb7AzcUg&amp;sensor=false"></script>
 	<script>
 
 		google.maps.event.addDomListener(window, 'load', function(){
@@ -102,8 +101,7 @@
 
 		  <div class="jumbotron">  
 		  	<div class="container">  
-		  		<h1>The CouchIt Map</h1>
-		  		<p class="lead">Find a friend to crash with!</p>
+		  		<h1>The Friend Map</h1>
 		  	</div>
 		  </div>
 

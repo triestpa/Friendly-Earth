@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>CouchIt</title>
+	<title>FriendMap</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<script src="js/jquery.js"></script>
@@ -160,6 +160,8 @@
 	 	<button id="Login" class="btn btn-default testButtons"> Log In </button> 
 	 	<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 
 	 	<button id="LoadList" class="btn btn-default testButtons"> Load List</button> 
+	 	<button id="LoadLocation" class="btn btn-default testButtons"> Load Location</button> 
+
 
 
 	  	<script>
@@ -200,7 +202,40 @@
 	  		}
 
 	  		document.getElementById("LoadList").onclick = loadFriendList;
-			
+
+	  		function getLocationPoints() {
+	  			FB.api('/me', function(response) {
+	       			console.log('Hello, ' + response.name + '.'); 
+	       			var location = response.location.name;       			
+	       			console.log('Your location is ' +  location + '.');
+
+	       			var queryURL = "http://api.geonames.org/searchJSON?q=Grinnell,%20IA&maxRows=10&username=triestpa";
+	       			
+	       			$.getJSON(queryURL)
+	       			.done(function( data ){
+	       				console.log(data);
+	       				console.log(data.geonames[0]);
+	       			})
+	       			.fail(function( jqxhr, textStatus, error ) {
+    					var err = textStatus + ", " + error;
+    					console.log( "Request Failed: " + err );
+					});
+
+	       			/*
+	       			var xmlHttp = null;
+    				xmlHttp = new XMLHttpRequest();
+    				xmlHttp.open( "GET", queryURL, false );
+    				xmlHttp.send( null );
+
+    				var respJSON = xmlHttp.;
+    				console.log(respJSON.geonames.geoname[0]);
+   					//console.log(xmlHttp.responseText);
+   					*/
+	     			});
+	  		}
+
+	     	document.getElementById("LoadLocation").onclick = getLocationPoints;
+
 		</script>
 
 	  	<div class="list-group" id ="friendList"></div>

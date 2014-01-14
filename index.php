@@ -11,57 +11,12 @@
 	<link href="css/my-styles.css" rel="stylesheet" media="screen">
 
 	<script src="js/bootstrap.min.js"></script>
+	<script src="js/scripts.js"></script>
+
 
 	<!-- Load the google map api -->
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5jiD2pw8yK6dyh1brz_0jEBcjb7AzcUg&amp;sensor=false"></script>
 	<script>
-
-	var map;
-	var center;
-
-	function initialize() {
-
-		  // Create an array of styles.
-		  var styles = [
-		  {
-		  	stylers: [
-		  	{ hue: "#007fff" },
-		  	{ saturation: -25 }
-		  	]
-		  },{
-		  	featureType: "road",
-		  	elementType: "geometry",
-		  	stylers: [
-		  	{ lightness: 100 },
-		  	{ visibility: "simplified" }
-		  	]
-		  },{
-		  	featureType: "road",
-		  	elementType: "labels",
-		  	stylers: [
-		  	{ visibility: "off" }
-		  	]
-		  }
-		  ];
-
-		// Create a new StyledMapType object, passing it the array of styles,
- 		// as well as the name to be displayed on the map type control.
- 		var styledMap = new google.maps.StyledMapType(styles,
- 			{name: "Styled Map"});
-
- 		var map_canvas = document.getElementById('map_canvas');
- 		var map_options = {
- 			center: new google.maps.LatLng(20, 0),
- 			zoom: 2,
- 			disableDefaultUI: true,
- 			mapTypeId: google.maps.MapTypeId.ROADMAP
- 		}
- 		map = new google.maps.Map(map_canvas, map_options);
-		    //Associate the styled map with the MapTypeId and set it to display.
-		    map.mapTypes.set('map_style', styledMap);
-		    map.setMapTypeId('map_style');
-		}
-
 
 		google.maps.event.addDomListener(window, 'load', function(){
 
@@ -78,112 +33,7 @@
 			map.setCenter(center);
 		});
 
-
-
-
-		function login() {
-			FB.login(function(response) {
-				if (response.authResponse) {
-					console.log('Welcome!  Fetching your information.... ');
-					FB.api('/me', function(response) {
-						console.log('Good to see you, ' + response.name + '.');
-						console.log('Your location is ' + response.location.name  + '.');
-					});
-				} else {
-					console.log('User cancelled login or did not fully authorize.');
-				}
-			}, {scope: 'user_location, friends_location'});
-		}
-
-
-		function loadFriendList() {
-			var friendList_HTML = "";
-
-			FB.api('me/friends', function(response) {
-				$.each(response.data,function(index,friend) {
-					FB.api(friend.id, function(response) {
-						friendList_HTML += "<a href=\"#\" class=\"list-group-item\">" + friend.name + '  lives in  ' + response.location.name + '.' + "</a>";
-						console.log(friend.name + '  lives in  ' + response.location.name + '.');
-						$("#friendList").html(friendList_HTML);
-					});
-				});
-			});
-		}
-
-
-		function getMyLocationPoints() {
-			var myLatlng;
-			var locationTitle;
-			FB.api('/me', function(response) {
-				console.log('Hello, ' + response.name + '.'); 
-				var location = response.location.name;       			
-				console.log('Your location is ' +  location + '.');
-
-				//Query geonames for location coordinates
-				var queryURL = "http://api.geonames.org/searchJSON?q=" + location + "&maxRows=10&username=triestpa";
-
-				$.getJSON(queryURL)
-				.done(function( data ){
-					console.log(data);
-					var firstmatch = data.geonames[0];
-					console.log("Name: " + firstmatch.name);
-					console.log("Lat: " + firstmatch.lat);
-					console.log("Lng: " + firstmatch.lng);
-					myLatlng = new google.maps.LatLng(firstmatch.lat, firstmatch.lng);
-					locationTitle = firstmatch.name;
-
-					//Add Location to map
-					var marker = new google.maps.Marker({
-						position: myLatlng,
-						map: map,
-						title: locationTitle
-					});
-				})
-				.fail(function( jqxhr, textStatus, error ) {
-					var err = textStatus + ", " + error;
-					console.log( "Request Failed: " + err );
-				});
-			});
-		}
-
-
-		function getFriendsLocationsPoints() {
-			var friendLatlng;
-			var locationTitle;
-			FB.api('me/friends', function(response) {
-				$.each(response.data,function(index,friend) {
-					FB.api(friend.id, function(response) {
-						var location = response.location.name;       			
-						var queryURL = "http://api.geonames.org/searchJSON?q=" + location + "&maxRows=10&username=triestpa";
-						$.getJSON(queryURL)
-						.done(function( data ){
-							console.log(data);
-							var firstmatch = data.geonames[0];
-							console.log("Name: " + firstmatch.name);
-							console.log("Lat: " + firstmatch.lat);
-							console.log("Lng: " + firstmatch.lng);
-							friendLatlng = new google.maps.LatLng(firstmatch.lat, firstmatch.lng);
-							locationTitle = firstmatch.name;
-
-							//Add Location to map
-							var marker = new google.maps.Marker({
-								position: friendLatlng,
-								map: map,
-								title: locationTitle
-							});
-
-						})
-						.fail(function( jqxhr, textStatus, error ) {
-							var err = textStatus + ", " + error;
-							console.log( "Request Failed: " + err );
-						});
-					});
-				});
-			});
-		}
-
-
-</script>
+	</script>
 
 </head>
 <body>
@@ -223,7 +73,7 @@
 		     firstScriptElement.parentNode.insertBefore(facebookJS, firstScriptElement);
 		 }());
 
-		  </script>
+	</script>
 
 		  <!-- Navbar -->
 		  <div class="navbar navbar-default navbar-fixed-top">
@@ -273,7 +123,7 @@
 
 
 		  		<script>
-	  				//-Set Log In button:
+	  				//Set the buttons
 	  				document.getElementById("Login").onclick = login;
 
 	  				document.getElementById("Logout").onclick = function(){
@@ -286,14 +136,11 @@
 
 	  				document.getElementById("LoadMyLocation").onclick = getMyLocationPoints;
 	  				document.getElementById("LoadFriendsLocations").onclick = getFriendsLocationsPoints;
+	  			</script>
 
-
-
-	  				</script>
-
-	  				<div class="list-group" id ="friendList"></div>
+	  			<div class="list-group" id ="friendList"></div>
 
 	  			</div>
 	  		</div>
 	  	</body>
-	  	</html>
+</html>

@@ -18,6 +18,7 @@
 
 	var map;
 	var center;
+
 	function initialize() {
 
 		  // Create an array of styles.
@@ -76,26 +77,122 @@
 		$(window).resize(function(){
 			map.setCenter(center);
 		});
+
+
+
+
+		function login() {
+			FB.login(function(response) {
+				if (response.authResponse) {
+					console.log('Welcome!  Fetching your information.... ');
+					FB.api('/me', function(response) {
+						console.log('Good to see you, ' + response.name + '.');
+						console.log('Your location is ' + response.location.name  + '.');
+					});
+				} else {
+					console.log('User cancelled login or did not fully authorize.');
+				}
+			}, {scope: 'user_location, friends_location'});
+		}
+
+
+		function loadFriendList() {
+			var friendList_HTML = "";
+
+			FB.api('me/friends', function(response) {
+				$.each(response.data,function(index,friend) {
+					FB.api(friend.id, function(response) {
+						friendList_HTML += "<a href=\"#\" class=\"list-group-item\">" + friend.name + '  lives in  ' + response.location.name + '.' + "</a>";
+						console.log(friend.name + '  lives in  ' + response.location.name + '.');
+						$("#friendList").html(friendList_HTML);
+					});
+				});
+			});
+		}
+
+
+		function getMyLocationPoints() {
+
+			var myLatlng;
+			var locationTitle;
+
+			FB.api('/me', function(response) {
+				console.log('Hello, ' + response.name + '.'); 
+				var location = response.location.name;       			
+				console.log('Your location is ' +  location + '.');
+
+				var queryURL = "http://api.geonames.org/searchJSON?q=" + location + "&maxRows=10&username=triestpa";
+
+				$.getJSON(queryURL)
+				.done(function( data ){
+					console.log(data);
+					var firstmatch = data.geonames[0];
+					console.log("Name: " + firstmatch.name);
+					console.log("Lat: " + firstmatch.lat);
+					console.log("Lng: " + firstmatch.lng);
+					myLatlng = new google.maps.LatLng(firstmatch.lat, firstmatch.lng);
+					locationTitle = firstmatch.name;
+
+					var marker = new google.maps.Marker({
+						position: myLatlng,
+						map: map,
+						title: locationTitle
+					});
+				})
+				.fail(function( jqxhr, textStatus, error ) {
+					var err = textStatus + ", " + error;
+					console.log( "Request Failed: " + err );
+				});
+			});
+
+
+		}
+
+
+		function getFriendsLocationsPoints() {
+			FB.api('me/friends', function(response) {
+				$.each(response.data,function(index,friend) {
+					FB.api(friend.id, function(response) {
+						var location = response.location.name;       			
+						var queryURL = "http://api.geonames.org/searchJSON?q=" + location + "&maxRows=10&username=triestpa";
+						$.getJSON(queryURL)
+						.done(function( data ){
+							console.log(data);
+							var firstmatch = data.geonames[0];
+							console.log("Name: " + firstmatch.name);
+							console.log("Lat: " + firstmatch.lat);
+							console.log("Lng: " + firstmatch.lng);
+						})
+						.fail(function( jqxhr, textStatus, error ) {
+							var err = textStatus + ", " + error;
+							console.log( "Request Failed: " + err );
+						});
+					});
+				});
+			});
+		}
+
+
 		</script>
 
-		</head>
-		<body>
+	</head>
+	<body>
 
 		<!-- Setup Facebook Integraton -->
 		<div id="fb-root"></div>
 		
 		<script>
-			window.fbAsyncInit = function() {
+		window.fbAsyncInit = function() {
 		    // init the FB JS SDK
-		   	FB.init({
+		    FB.init({
 		      appId      : '681219568576604',                    // App ID from the app dashboard
 		      status     : true,                                 // Check Facebook Login status
 		      xfbml      : true                                  // Look for social plugins on the page
-		  	});
+		  });
 
 	    	// Additional initialization code such as adding Event Listeners goes here
-		       
-			};
+
+	    };
 
 		  // Load the SDK asynchronously
 		  (function(){
@@ -116,153 +213,77 @@
 		     firstScriptElement.parentNode.insertBefore(facebookJS, firstScriptElement);
 		 }());
 
-	  </script>
+		  </script>
 
-	  <!-- Navbar -->
-	  <div class="navbar navbar-default navbar-fixed-top">
-	  	<div class="container">
+		  <!-- Navbar -->
+		  <div class="navbar navbar-default navbar-fixed-top">
+		  	<div class="container">
 
-	  		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-	  			<span class="icon-bar"></span>
-	  			<span class="icon-bar"></span>
-	  			<span class="icon-bar"></span>
-	  		</button>
+		  		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		  			<span class="icon-bar"></span>
+		  			<span class="icon-bar"></span>
+		  			<span class="icon-bar"></span>
+		  		</button>
 
-	  		<a class="navbar-brand text-muted" href="#">CouchIt</a>
-	  		<div class="collapse navbar-collapse">
-	  			<ul class="nav navbar-nav navbar-right">
-	  				<li class="active"><a href="#">Map</a></li>
-	  				<li><a href="#">Overview</a></li>
-	  				<li><a href="#">About Us</a></li>
-	  				<li><a href="#">Future Plans</a></li>
-	  			</ul>
+		  		<a class="navbar-brand text-muted" href="#">CouchIt</a>
+		  		<div class="collapse navbar-collapse">
+		  			<ul class="nav navbar-nav navbar-right">
+		  				<li class="active"><a href="#">Map</a></li>
+		  				<li><a href="#">Overview</a></li>
+		  				<li><a href="#">About Us</a></li>
+		  				<li><a href="#">Future Plans</a></li>
+		  			</ul>
 
+		  		</div>
+		  	</div>
+		  </div>
+		  <!-- End navbar -->
+
+
+		  <div class="jumbotron">  
+		  	<div class="container">  
+		  		<h1>The CouchIt Map</h1>
+		  		<p class="lead">Find a friend to crash with!</p>
+		  	</div>
+		  </div>
+
+		  <div class="row">
+		  	<div class="col-sm-9">
+		  		<div id="map_canvas" class=""></div>
+		  	</div>
+
+		  	<div class="col-sm-3" id="friend-list">
+
+		  		<button id="Login" class="btn btn-default testButtons"> Log In </button> 
+		  		<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 
+		  		<button id="LoadList" class="btn btn-default testButtons"> Load List</button> 
+		  		<button id="LoadMyLocation" class="btn btn-default testButtons"> Load My Location</button> 
+		  		<button id="LoadFriendsLocations" class="btn btn-default testButtons"> Load Friends Locations</button> 
+
+
+
+		  		<script>
+	  				//-Set Log In button:
+	  				document.getElementById("Login").onclick = login;
+
+	  				document.getElementById("Logout").onclick = function(){
+	  					FB.logout(function(response) {
+	  						console.log("User is logged out");
+	  					});
+	  				};
+
+	  				document.getElementById("LoadList").onclick = loadFriendList;
+
+	  				document.getElementById("LoadMyLocation").onclick = getMyLocationPoints;
+	  				document.getElementById("LoadFriendsLocations").onclick = getFriendsLocationsPoints;
+
+
+
+	  				</script>
+
+	  				<div class="list-group" id ="friendList"></div>
+
+	  			</div>
 	  		</div>
-	  	</div>
-	  </div>
-	  <!-- End navbar -->
-
-
-	  <div class="jumbotron">  
-	  	<div class="container">  
-	  		<h1>The CouchIt Map</h1>
-	  		<p class="lead">Find a friend to crash with!</p>
-	  	</div>
-	  </div>
-
-	  <div class="row">
-	  	<div class="col-sm-9">
-	  		<div id="map_canvas" class=""></div>
-	  	</div>
-
-	  	<div class="col-sm-3" id="friend-list">
-
-	 	<button id="Login" class="btn btn-default testButtons"> Log In </button> 
-	 	<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 
-	 	<button id="LoadList" class="btn btn-default testButtons"> Load List</button> 
-	 	<button id="LoadMyLocation" class="btn btn-default testButtons"> Load My Location</button> 
-	 	<button id="LoadFriendsLocations" class="btn btn-default testButtons"> Load Friends Locations</button> 
-
-
-
-	  	<script>
-	  		function login() {
-				FB.login(function(response) {
-	  			if (response.authResponse) {
-	    		 	console.log('Welcome!  Fetching your information.... ');
-	     			FB.api('/me', function(response) {
-	       			console.log('Good to see you, ' + response.name + '.');
-	       			console.log('Your location is ' + response.location.name  + '.');
-	     			});
-	   			} else {
-	    			console.log('User cancelled login or did not fully authorize.');
-	   			}
-	 			}, {scope: 'user_location, friends_location'});
-			}
-			//-Set Log In button:
-			document.getElementById("Login").onclick = login;
-			
-			document.getElementById("Logout").onclick = function(){
-				FB.logout(function(response) {
-					console.log("User is logged out");
-					});
-				};
-
-	  		function loadFriendList() {
-	  			var friendList_HTML = "";
-
-	  			FB.api('me/friends', function(response) {
-	  				$.each(response.data,function(index,friend) {
-                		FB.api(friend.id, function(response) {
-                			friendList_HTML += "<a href=\"#\" class=\"list-group-item\">" + friend.name + '  lives in  ' + response.location.name + '.' + "</a>";
-                			console.log(friend.name + '  lives in  ' + response.location.name + '.');
-	  						$("#friendList").html(friendList_HTML);
-                		});
-            		});
-	  			});
-	  		}
-
-	  		document.getElementById("LoadList").onclick = loadFriendList;
-
-	  		function getMyLocationPoints() {
-	  			FB.api('/me', function(response) {
-	       			console.log('Hello, ' + response.name + '.'); 
-	       			var location = response.location.name;       			
-	       			console.log('Your location is ' +  location + '.');
-
-	       			var queryURL = "http://api.geonames.org/searchJSON?q=" + location + "&maxRows=10&username=triestpa";
-	       			
-	       			$.getJSON(queryURL)
-	       			.done(function( data ){
-	       				console.log(data);
-	       				var firstmatch = data.geonames[0];
-	       				console.log("Name: " + firstmatch.name);
-	       				console.log("Lat: " + firstmatch.lat);
-	       				console.log("Lng: " + firstmatch.lng);
-	       			})
-	       			.fail(function( jqxhr, textStatus, error ) {
-    					var err = textStatus + ", " + error;
-    					console.log( "Request Failed: " + err );
-					});
-	     		});
-	  		}
-
-	     	document.getElementById("LoadMyLocation").onclick = getMyLocationPoints;
-
-			function getFriendsLocationsPoints() {
-				  			FB.api('me/friends', function(response) {
-	  				$.each(response.data,function(index,friend) {
-                		FB.api(friend.id, function(response) {
-							var location = response.location.name;       			
-	       					console.log(response.name + 'is in' +  location + '.');
-
-	       					var queryURL = "http://api.geonames.org/searchJSON?q=" + location + "&maxRows=10&username=triestpa";
-                			$.getJSON(queryURL)
-			       				.done(function( data ){
-			       					console.log(data);
-			       					var firstmatch = data.geonames[0];
-			       					console.log("Name: " + firstmatch.name);
-			       					console.log("Lat: " + firstmatch.lat);
-			       					console.log("Lng: " + firstmatch.lng);
-			       					})
-			       				.fail(function( jqxhr, textStatus, error ) {
-		    						var err = textStatus + ", " + error;
-		    						console.log( "Request Failed: " + err );
-									});
-                		});
-            		});
-	  			});
-			}
-
-	     	document.getElementById("LoadFriendsLocations").onclick = getFriendsLocationsPoints;
-
-
-
-		</script>
-
-	  	<div class="list-group" id ="friendList"></div>
-
-	  	</div>
-	  </div>
-	</body>
-</html>
+	  	</body>
+	  	</html>

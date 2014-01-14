@@ -1,4 +1,4 @@
-CouchIt-WebApp
+Friend-Map
 ==============
 
-A website to help people connect to their online social networks in order to find a friend to stay with while traveling.
+A web-app that displays a global interactive map with your Facebook friends marked.

@@ -112,15 +112,14 @@
 
 
 		function getMyLocationPoints() {
-
 			var myLatlng;
 			var locationTitle;
-
 			FB.api('/me', function(response) {
 				console.log('Hello, ' + response.name + '.'); 
 				var location = response.location.name;       			
 				console.log('Your location is ' +  location + '.');
 
+				//Query geonames for location coordinates
 				var queryURL = "http://api.geonames.org/searchJSON?q=" + location + "&maxRows=10&username=triestpa";
 
 				$.getJSON(queryURL)
@@ -133,6 +132,7 @@
 					myLatlng = new google.maps.LatLng(firstmatch.lat, firstmatch.lng);
 					locationTitle = firstmatch.name;
 
+					//Add Location to map
 					var marker = new google.maps.Marker({
 						position: myLatlng,
 						map: map,
@@ -144,12 +144,12 @@
 					console.log( "Request Failed: " + err );
 				});
 			});
-
-
 		}
 
 
 		function getFriendsLocationsPoints() {
+			var friendLatlng;
+			var locationTitle;
 			FB.api('me/friends', function(response) {
 				$.each(response.data,function(index,friend) {
 					FB.api(friend.id, function(response) {
@@ -162,6 +162,16 @@
 							console.log("Name: " + firstmatch.name);
 							console.log("Lat: " + firstmatch.lat);
 							console.log("Lng: " + firstmatch.lng);
+							friendLatlng = new google.maps.LatLng(firstmatch.lat, firstmatch.lng);
+							locationTitle = firstmatch.name;
+
+							//Add Location to map
+							var marker = new google.maps.Marker({
+								position: friendLatlng,
+								map: map,
+								title: locationTitle
+							});
+
 						})
 						.fail(function( jqxhr, textStatus, error ) {
 							var err = textStatus + ", " + error;
@@ -173,16 +183,16 @@
 		}
 
 
-		</script>
+</script>
 
-	</head>
-	<body>
+</head>
+<body>
 
-		<!-- Setup Facebook Integraton -->
-		<div id="fb-root"></div>
-		
-		<script>
-		window.fbAsyncInit = function() {
+	<!-- Setup Facebook Integraton -->
+	<div id="fb-root"></div>
+
+	<script>
+	window.fbAsyncInit = function() {
 		    // init the FB JS SDK
 		    FB.init({
 		      appId      : '681219568576604',                    // App ID from the app dashboard

@@ -11,7 +11,7 @@
 	<link href="css/my-styles.css" rel="stylesheet" media="screen">
 
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5jiD2pw8yK6dyh1brz_0jEBcjb7AzcUg&amp;sensor=false"></script>
-	<script src="js/markerclusterer_compiled.js"></script>
+	<script src="js/markerclusterer_packed.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/scripts.js"></script>
 
@@ -106,11 +106,11 @@
 		  </div>
 
 		  <div class="row">
-		  	<div class="col-sm-9">
+		  	<div class="col-sm-10">
 		  		<div id="map_canvas" class=""></div>
 		  	</div>
 
-		  	<div class="col-sm-3" id="friend-list">
+		  	<div class="col-sm-2" id="friend-list">
 
 		  		<button id="Login" class="btn btn-default testButtons"> Log In </button> 
 		  		<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 

@@ -30,13 +30,11 @@ function loadFriendList() {
 		}
 
 
-
-
-
 var map;
 var center;
 var markers = [];
 var markerCluster;
+var infowindow_prev = new google.maps.InfoWindow();
 
 //Initialize the google map
 function initialize() {
@@ -83,16 +81,37 @@ function initialize() {
 		    map.mapTypes.set('map_style', styledMap);
 		    map.setMapTypeId('map_style');
 
+		markerCluster = new MarkerClusterer(map, markers, {
+          zoomOnClick: false
+        });
+
 		google.maps.event.addListener(map, 'zoom_changed', function() {
-				markerCluster = new MarkerClusterer(map, markers);
+				markerCluster.repaint();
  			});
 		google.maps.event.addListener(map, 'dragend', function() {
-				markerCluster = new MarkerClusterer(map, markers);
+				markerCluster.repaint();
  			});
+
+
+		google.maps.event.addListener(markerCluster, 'click', function(c) {
+				var markers = c.getMarkers();
+				var people = "";
+    			//Get all the titles
+    			for(var i = 0; i < markers.length; i++) {
+        			people += markers[i].getTitle() + "\n";
+    				}
+
+			    var infowindow = new google.maps.InfoWindow();
+			    infowindow_prev.close();
+			    infowindow.setContent(people);
+			    infowindow.open(map, markers[0]);
+			    infowindow_prev = infowindow;
+			});
+
 	}
 
 function addMarker(lat, lng, location, person){
-		var infoWindow = new google.maps.InfoWindow({
+		var infowindow = new google.maps.InfoWindow({
 				content: person
 				});
 
@@ -103,16 +122,28 @@ function addMarker(lat, lng, location, person){
 				position: Latlng,
 				//	animation: google.maps.Animation.DROP,
 				map: map,
-				title: location
+				title: person
 			});
 
 		markers.push(marker);
 
 		google.maps.event.addListener(marker, 'click', function() {
-   				infoWindow.open(map,marker);
+				infowindow_prev.close();
+   				infowindow.open(map,marker);
+   				infowindow_prev = infowindow;
   			});
+		/*
+		google.maps.event.addListener(marker, 'mouseover', function() {
+				infowindow_prev.close();
+   				infowindow.open(map,marker);
+   				infowindow_prev = infowindow;
+  			});
+		google.maps.event.addListener(marker, 'mouseout', function() {
+				infowindow_prev.close();
+  			});
+  		*/
 
-		markerCluster = new MarkerClusterer(map, markers);
+		markerCluster.addMarker(marker);
 }
 
 

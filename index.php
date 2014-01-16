@@ -18,9 +18,9 @@
 
 	<script>
 
-		google.maps.event.addDomListener(window, 'load', function(){
+	google.maps.event.addDomListener(window, 'load', function(){
 
-			initialize();
+		initialize();
 
 			//The map will re-center when the page size changes
 			google.maps.event.addDomListener(map, 'idle', function(){
@@ -29,9 +29,10 @@
 
 		});
 
-		$(window).resize(function(){
-			map.setCenter(center);
-		});
+	$(window).resize(function(){
+		map.setCenter(center);
+		$("#map_canvas").height($(window).height() - 50);
+	});
 
 	</script>
 
@@ -73,7 +74,7 @@
 		     firstScriptElement.parentNode.insertBefore(facebookJS, firstScriptElement);
 		 }());
 
-	</script>
+		  </script>
 
 		  <!-- Navbar -->
 		  <div class="navbar navbar-default navbar-fixed-top">
@@ -81,10 +82,14 @@
 
 		  		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 		  			<span class="icon-bar"></span>
+		  			<span class="icon-bar"></span>
 		  		</button>
 
 		  		<a class="navbar-brand text-muted" href="#">Friend Map</a>
 		  		<div class="collapse navbar-collapse">
+		  			<button class="btn btn-default" data-toggle="modal" data-target="#myModal">
+		  					Launch demo modal
+		  				</button>
 		  			<ul class="nav navbar-nav navbar-right">
 		  				<li class="active"><a href="#">Map</a></li>
 		  				<li><a href="#">About</a></li>
@@ -95,20 +100,28 @@
 		  </div>
 		  <!-- End navbar -->
 
-		  <div class="row">
-		  	<div class="col-sm-10">
-		  		<div id="map_canvas" class=""></div>
+		  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  	<div class="modal-dialog">
+		  		<div class="modal-content">
+		  			<div class="modal-header">
+		  				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		  				<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+		  			</div>
+		  			<div class="modal-body">
+		  				<button id="Login" class="btn btn-default testButtons"> Log In </button> 
+		  				<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 
+		  				<button id="LoadList" class="btn btn-default testButtons"> Load List</button> 
+		  				<button id="LoadMyLocation" class="btn btn-default testButtons"> Load My Location</button> 
+		  				<button id="LoadFriendsLocations" class="btn btn-default testButtons"> Load Friends Locations</button> 
+		  			</div>
+		  			<div class="modal-footer">
+		  				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  			</div>
+		  		</div>
 		  	</div>
+		  </div>
 
-		  	<div class="col-sm-2" id="friend-list">
-
-		  		<button id="Login" class="btn btn-default testButtons"> Log In </button> 
-		  		<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 
-		  		<button id="LoadList" class="btn btn-default testButtons"> Load List</button> 
-		  		<button id="LoadMyLocation" class="btn btn-default testButtons"> Load My Location</button> 
-		  		<button id="LoadFriendsLocations" class="btn btn-default testButtons"> Load Friends Locations</button> 
-
-
+		  <div id="map_canvas"></div>
 
 		  		<script>
 	  				//Set the buttons
@@ -125,7 +138,6 @@
 	  				document.getElementById("LoadMyLocation").onclick = getMyLocationPoints;
 	  				document.getElementById("LoadFriendsLocations").onclick = getFriendsLocationsPoints;
 	  			</script>
-	  			</div>
 	  		</div>
 	  	</body>
-</html>
+	  	</html>

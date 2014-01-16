@@ -34,7 +34,7 @@ var map;
 var center;
 var markers = [];
 var markerCluster;
-var infowindow_prev = new google.maps.InfoWindow();
+var infoBubble_prev = new InfoBubble();
 
 //Initialize the google map
 function initialize() {
@@ -91,29 +91,49 @@ function initialize() {
 		google.maps.event.addListener(map, 'dragend', function() {
 				markerCluster.repaint();
  			});
+		google.maps.event.addListener(map, 'click', function() {
+				infoBubble_prev.close();
+ 			});
 
 
 		google.maps.event.addListener(markerCluster, 'click', function(c) {
 				var markers = c.getMarkers();
-				var people = "";
+				var people = "<ul class=list-group; id=markerCluster>";
     			//Get all the titles
     			for(var i = 0; i < markers.length; i++) {
-        			people += markers[i].getTitle() + "\n";
+        			people += "<li class=list-group-item>" + markers[i].getTitle() + "</li>";
     				}
+    			people += '</ul>'
 
-			    var infowindow = new google.maps.InfoWindow();
-			    infowindow_prev.close();
-			    infowindow.setContent(people);
-			    infowindow.open(map, markers[0]);
-			    infowindow_prev = infowindow;
+    			var infoBubble = new InfoBubble({
+          			minWidth: 40,
+          			maxWidth: 200,
+          			maxHeight: 150,
+          			padding: 0,
+          			disableAutoPan: true,
+          			hideCloseButton: true,
+          			content: people
+        			});
+    			infoBubble_prev.close();
+    			infoBubble.open(map, markers[0]);
+    			infoBubble_prev = infoBubble;
 			});
-
 	}
 
+//Add a marker to the map for each person
 function addMarker(lat, lng, location, person){
-		var infowindow = new google.maps.InfoWindow({
-				content: person
-				});
+		windowContent = '<div id="windowContent"> <p class="text-center">' + '  ' + person + '</p></div>'
+
+		var infoBubble = new InfoBubble({
+          	minWidth: 40,
+          	maxWidth: 200,
+          	minHeight: 10,
+          	maxHeight: 100,
+          	padding: 0,
+          	disableAutoPan: true,
+          	hideCloseButton: true,
+          	content: windowContent
+        	});
 
 		Latlng = new google.maps.LatLng(lat, lng);
 
@@ -128,20 +148,10 @@ function addMarker(lat, lng, location, person){
 		markers.push(marker);
 
 		google.maps.event.addListener(marker, 'click', function() {
-				infowindow_prev.close();
-   				infowindow.open(map,marker);
-   				infowindow_prev = infowindow;
+				infoBubble_prev.close();
+   				infoBubble.open(map,marker);
+   				infoBubble_prev = infoBubble;
   			});
-		/*
-		google.maps.event.addListener(marker, 'mouseover', function() {
-				infowindow_prev.close();
-   				infowindow.open(map,marker);
-   				infowindow_prev = infowindow;
-  			});
-		google.maps.event.addListener(marker, 'mouseout', function() {
-				infowindow_prev.close();
-  			});
-  		*/
 
 		markerCluster.addMarker(marker);
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>FriendMap</title>
+	<title>Friend Map</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<script src="js/jquery.js"></script>
@@ -12,6 +12,7 @@
 
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5jiD2pw8yK6dyh1brz_0jEBcjb7AzcUg&amp;sensor=false"></script>
 	<script src="js/markerclusterer_packed.js"></script>
+	<script src="js/infobubble-compiled.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/scripts.js"></script>
 
@@ -80,30 +81,19 @@
 
 		  		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 		  			<span class="icon-bar"></span>
-		  			<span class="icon-bar"></span>
-		  			<span class="icon-bar"></span>
 		  		</button>
 
-		  		<a class="navbar-brand text-muted" href="#">CouchIt</a>
+		  		<a class="navbar-brand text-muted" href="#">Friend Map</a>
 		  		<div class="collapse navbar-collapse">
 		  			<ul class="nav navbar-nav navbar-right">
 		  				<li class="active"><a href="#">Map</a></li>
-		  				<li><a href="#">Overview</a></li>
-		  				<li><a href="#">About Us</a></li>
-		  				<li><a href="#">Future Plans</a></li>
+		  				<li><a href="#">About</a></li>
 		  			</ul>
 
 		  		</div>
 		  	</div>
 		  </div>
 		  <!-- End navbar -->
-
-
-		  <div class="jumbotron">  
-		  	<div class="container">  
-		  		<h1>The Friend Map</h1>
-		  	</div>
-		  </div>
 
 		  <div class="row">
 		  	<div class="col-sm-10">

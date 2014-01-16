@@ -73,7 +73,9 @@ function initialize() {
  			zoom: 2,
  			maxZoom: 15,
  			minZoom: 2,
- 			disableDefaultUI: true,
+ 			disableDefaultUI: false,
+ 			mapTypeControl: false,
+ 			streetViewControl: false,
  			mapTypeId: google.maps.MapTypeId.ROADMAP
  		}
  		map = new google.maps.Map(map_canvas, map_options);
@@ -98,17 +100,17 @@ function initialize() {
 
 		google.maps.event.addListener(markerCluster, 'click', function(c) {
 				var markers = c.getMarkers();
-				var people = "<ul class=list-group; id=markerCluster>";
+				var people = "<ul class=list-group markerCluster>";
     			//Get all the titles
     			for(var i = 0; i < markers.length; i++) {
-        			people += "<li class=list-group-item>" + markers[i].getTitle() + "</li>";
+        			people += "<li class=list-group-item>" + markers[i].bubbleRow + "</li>";
     				}
     			people += '</ul>'
 
     			var infoBubble = new InfoBubble({
           			minWidth: 40,
-          			maxWidth: 200,
-          			maxHeight: 150,
+          			maxWidth: 300,
+          			maxHeight: 142,
           			padding: 0,
           			disableAutoPan: true,
           			hideCloseButton: true,
@@ -122,30 +124,33 @@ function initialize() {
 
 //Add a marker to the map for each person
 function addMarker(lat, lng, location, person){
-		windowContent = '<div id="windowContent"> <p class="text-center">' + '  ' + person + '</p></div>'
-
-		var infoBubble = new InfoBubble({
-          	minWidth: 40,
-          	maxWidth: 200,
-          	minHeight: 10,
-          	maxHeight: 100,
-          	padding: 0,
-          	disableAutoPan: true,
-          	hideCloseButton: true,
-          	content: windowContent
-        	});
-
+		//windowContent = '<div id="windowContent"> <p class="text-center">' + '  ' + person + '</p></div>'
 		Latlng = new google.maps.LatLng(lat, lng);
+
+		windowContent = '<div class=nameText> <a href=' + person.link + ' target=_blank>' + person.name + '</a></div>';
 
 		//Add Location to map
 		var marker = new google.maps.Marker({
 				position: Latlng,
 				//	animation: google.maps.Animation.DROP,
 				map: map,
-				title: person
+				title: person.name
 			});
+		marker['bubbleRow'] = windowContent;
 
 		markers.push(marker);
+
+
+		var infoBubble = new InfoBubble({
+          	minWidth: 40,
+          	maxWidth: 300,
+          	minHeight: 20,
+          	maxHeight: 100,
+          	padding: 0,
+          	disableAutoPan: true,
+          	hideCloseButton: true,
+          	content: windowContent
+        });
 
 		google.maps.event.addListener(marker, 'click', function() {
 				infoBubble_prev.close();
@@ -159,7 +164,7 @@ function addMarker(lat, lng, location, person){
 
 //Get the location of the user and mark it on the map
 function getMyLocationPoints() {
-			FB.api('/me', {fields: 'name, location, picture'}, function(response) {
+			FB.api('/me', {fields: 'name, location, link'}, function(response) {
 				console.log('Hello, ' + response.name + '.'); 
 				var location = response.location.name;    
 				console.log('Your location is ' +  location + '.');
@@ -171,7 +176,7 @@ function getMyLocationPoints() {
 function getFriendsLocationsPoints() {
 	var friendLatlng;
 	var locationTitle;
-	FB.api('me/friends', {fields: 'name, location, picture'}, function(response) {
+	FB.api('me/friends', {fields: 'name, location, link'}, function(response) {
 		$.each(response.data,function(index,friend) {
 				if (typeof friend.location === "undefined") {
 					console.log("Cannot access the location of " + friend.name);
@@ -188,22 +193,22 @@ function findLocation(friend) {
 	FB.api('/'+friend.location.id, function(GEOresponse) {
 					if (!GEOresponse || GEOresponse.error) {
 						console.log("API Response Error: " + GEOresponse.error.message);
-						queryGeoNames(friend.location.name, friend.name);
+						queryGeoNames(friend.location.name, friend);
 					}
 					else {
-						addMarker(GEOresponse.location.latitude, GEOresponse.location.longitude, GEOresponse.name, friend.name);
+						addMarker(GEOresponse.location.latitude, GEOresponse.location.longitude, GEOresponse.name, friend);
 							}
 						});
 }
 
-//RESTful query to geoname.org if FB query fails
-function queryGeoNames(location, name) {
+//RESTful query to geonames.org if FB query fails
+function queryGeoNames(location, friend) {
 	var queryURL = "http://api.geonames.org/searchJSON?q=" + location + "&maxRows=1&username=triestpa";
 					$.getJSON(queryURL)
 					.done(function( data ){
 						var firstmatch = data.geonames[0];
 						console.log("Location: " + firstmatch.name + ", " + firstmatch.lat + ", " + firstmatch.lng);
-						addMarker(firstmatch.lat, firstmatch.lng, location, name);
+						addMarker(firstmatch.lat, firstmatch.lng, location, friend);
   					})
 					.fail(function( jqxhr, textStatus, error ) {
 						var err = textStatus + ", " + error;

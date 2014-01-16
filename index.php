@@ -125,9 +125,6 @@
 	  				document.getElementById("LoadMyLocation").onclick = getMyLocationPoints;
 	  				document.getElementById("LoadFriendsLocations").onclick = getFriendsLocationsPoints;
 	  			</script>
-
-	  			<div class="list-group" id ="friendList"></div>
-
 	  			</div>
 	  		</div>
 	  	</body>

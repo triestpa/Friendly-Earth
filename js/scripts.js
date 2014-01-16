@@ -159,14 +159,11 @@ function addMarker(lat, lng, location, person){
 
 //Get the location of the user and mark it on the map
 function getMyLocationPoints() {
-			FB.api('/me', function(response) {
+			FB.api('/me', {fields: 'name, location, picture'}, function(response) {
 				console.log('Hello, ' + response.name + '.'); 
 				var location = response.location.name;    
 				console.log('Your location is ' +  location + '.');
-				console.log(response.location.id);
-				FB.api('/'+response.location.id, function(GEOresponse) {
-					addMarker(GEOresponse.location.latitude, GEOresponse.location.longitude, GEOresponse.name, response.name);
-				});
+				findLocation(response);
 			});
 }
 
@@ -174,32 +171,39 @@ function getMyLocationPoints() {
 function getFriendsLocationsPoints() {
 	var friendLatlng;
 	var locationTitle;
-	FB.api('me/friends', function(response) {
+	FB.api('me/friends', {fields: 'name, location, picture'}, function(response) {
 		$.each(response.data,function(index,friend) {
-			FB.api(friend.id, function(response) {
-				if (typeof response.location === "undefined") {
+				if (typeof friend.location === "undefined") {
 					console.log("Cannot access the location of " + friend.name);
 				}
 				else {
-					FB.api('/'+response.location.id, function(GEOresponse) {
-					addMarker(GEOresponse.location.latitude, GEOresponse.location.longitude, GEOresponse.name, response.name);
-					});
-				}
+					findLocation(friend);
+					}
 			});
-		});
 	});
 }
 
-//RESTful query to geoname.org
-function queryGeoNames(location) {
+//Find the location coordinates using the FB graph api
+function findLocation(friend) {
+	FB.api('/'+friend.location.id, function(GEOresponse) {
+					if (!GEOresponse || GEOresponse.error) {
+						console.log("API Response Error: " + GEOresponse.error.message);
+						queryGeoNames(friend.location.name, friend.name);
+					}
+					else {
+						addMarker(GEOresponse.location.latitude, GEOresponse.location.longitude, GEOresponse.name, friend.name);
+							}
+						});
+}
+
+//RESTful query to geoname.org if FB query fails
+function queryGeoNames(location, name) {
 	var queryURL = "http://api.geonames.org/searchJSON?q=" + location + "&maxRows=1&username=triestpa";
 					$.getJSON(queryURL)
 					.done(function( data ){
-						console.log(data);
 						var firstmatch = data.geonames[0];
-						console.log("Location: " + firstmatch.name);
-						console.log("Lat: " + firstmatch.lat);
-						console.log("Lng: " + firstmatch.lng);
+						console.log("Location: " + firstmatch.name + ", " + firstmatch.lat + ", " + firstmatch.lng);
+						addMarker(firstmatch.lat, firstmatch.lng, location, name);
   					})
 					.fail(function( jqxhr, textStatus, error ) {
 						var err = textStatus + ", " + error;

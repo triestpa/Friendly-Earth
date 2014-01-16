@@ -27,13 +27,6 @@ body {
 	margin-top: 10px;
 }
 
-#friendList {
-	margin-top: 10px;
-	margin-right: 40px;
-	overflow: scroll;
-    height: 425px;
-}
-
 #markerCluster {
 	max-height: 200px;
 	max-width: 200px;

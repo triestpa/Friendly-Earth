@@ -84,7 +84,10 @@ function initialize() {
 		    map.setMapTypeId('map_style');
 
 		markerCluster = new MarkerClusterer(map, markers, {
-          zoomOnClick: false
+          zoomOnClick: false,
+          minimumClusterSize: 1,
+          averageCenter: true,
+          gridSize: 40
         });
 
 		google.maps.event.addListener(map, 'zoom_changed', function() {
@@ -98,9 +101,9 @@ function initialize() {
  			});
 
 
-		google.maps.event.addListener(markerCluster, 'click', function(c) {
-				var markers = c.getMarkers();
-				var people = "<ul class=list-group markerCluster>";
+		google.maps.event.addListener(markerCluster, 'click', function(cluster) {
+				var markers = cluster.getMarkers();
+				var people = "<ul class=markerCluster list-group>";
     			//Get all the titles
     			for(var i = 0; i < markers.length; i++) {
         			people += "<li class=list-group-item>" + markers[i].bubbleRow + "</li>";
@@ -110,14 +113,17 @@ function initialize() {
     			var infoBubble = new InfoBubble({
           			minWidth: 40,
           			maxWidth: 300,
-          			maxHeight: 142,
           			padding: 0,
           			disableAutoPan: true,
           			hideCloseButton: true,
           			content: people
         			});
+
+    			var center = new google.maps.MVCObject;
+				center.set('position', cluster.center_);
+
     			infoBubble_prev.close();
-    			infoBubble.open(map, markers[0]);
+    			infoBubble.open(map, center);
     			infoBubble_prev = infoBubble;
 			});
 	}
@@ -129,35 +135,24 @@ function addMarker(lat, lng, location, person){
 
 		windowContent = '<div class=nameText> <a href=' + person.link + ' target=_blank>' + person.name + '</a></div>';
 
+		var markerImage = { 
+				url :"http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m1.png",
+                size : new google.maps.Size(50, 50),
+                origin : new google.maps.Point(0, 0),
+                anchor : new google.maps.Point(27,27)
+            };
+
 		//Add Location to map
 		var marker = new google.maps.Marker({
 				position: Latlng,
 				//	animation: google.maps.Animation.DROP,
 				map: map,
-				title: person.name
+				title: person.name,
+				anchorPoint: new google.maps.Point(0,0),
+				icon: markerImage
 			});
 		marker['bubbleRow'] = windowContent;
-
 		markers.push(marker);
-
-
-		var infoBubble = new InfoBubble({
-          	minWidth: 40,
-          	maxWidth: 300,
-          	minHeight: 20,
-          	maxHeight: 100,
-          	padding: 0,
-          	disableAutoPan: true,
-          	hideCloseButton: true,
-          	content: windowContent
-        });
-
-		google.maps.event.addListener(marker, 'click', function() {
-				infoBubble_prev.close();
-   				infoBubble.open(map,marker);
-   				infoBubble_prev = infoBubble;
-  			});
-
 		markerCluster.addMarker(marker);
 }
 

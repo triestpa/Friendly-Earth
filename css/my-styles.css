@@ -27,11 +27,13 @@ body {
 	margin-top: 10px;
 }
 
-#markerCluster {
+.markerCluster {
 	max-height: 200px;
 	max-width: 200px;
 	padding: 0px;
 	margin: 0px;
+	overflow: scroll;
+	background-color: #0000FF;
 }
 
 .nameText {

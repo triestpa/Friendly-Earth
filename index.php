@@ -21,6 +21,7 @@
 	google.maps.event.addDomListener(window, 'load', function(){
 
 		initialize();
+		$("#map_canvas").height($(window).height() - 50);
 
 			//The map will re-center when the page size changes
 			google.maps.event.addDomListener(map, 'idle', function(){

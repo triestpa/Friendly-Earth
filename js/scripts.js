@@ -103,17 +103,18 @@ function initialize() {
 
 		google.maps.event.addListener(markerCluster, 'click', function(cluster) {
 				var markers = cluster.getMarkers();
-				var people = "<ul class=markerCluster list-group>";
+				var people = "<div class=markerCluster list-group>";
     			//Get all the titles
     			for(var i = 0; i < markers.length; i++) {
-        			people += "<li class=list-group-item>" + markers[i].bubbleRow + "</li>";
+        			people += markers[i].bubbleRow;
     				}
-    			people += '</ul>'
+    			people += '</div>'
 
     			var infoBubble = new InfoBubble({
           			minWidth: 40,
           			maxWidth: 300,
           			padding: 0,
+          			borderWidth: 2,
           			disableAutoPan: true,
           			hideCloseButton: true,
           			content: people
@@ -133,7 +134,8 @@ function addMarker(lat, lng, location, person){
 		//windowContent = '<div id="windowContent"> <p class="text-center">' + '  ' + person + '</p></div>'
 		Latlng = new google.maps.LatLng(lat, lng);
 
-		windowContent = '<div class=nameText> <a href=' + person.link + ' target=_blank>' + person.name + '</a></div>';
+		//windowContent = '<a href=' + person.link + ' target=_blank> <li class=list-group-item nameText>' + person.name + '</a></li>';
+		windowContent = '<a class=list-group-item nameText href=' + person.link + ' target=_blank>' + person.name + '</a>';
 
 		var markerImage = { 
 				url :"http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m1.png",

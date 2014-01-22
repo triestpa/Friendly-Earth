@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Friend Map</title>
+	<title>Friendly Earth</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<script src="js/jquery.js"></script>
@@ -28,7 +28,17 @@
 				center = map.getCenter();
 			});
 
-		});
+
+			//if user is not yet logged in, prompt a loggin
+			FB.getLoginStatus(function(response) {
+  				if (response.status === 'connected') {
+  					console.log("User is already logged in")
+  					getFriendsLocationsPoints();
+  				} else {
+  		 			$('#loginModal').modal('show')
+ 		 		}
+	 		});
+	});
 
 	$(window).resize(function(){
 		map.setCenter(center);
@@ -75,6 +85,16 @@
 		     firstScriptElement.parentNode.insertBefore(facebookJS, firstScriptElement);
 		 }());
 
+		  	//if user is not yet logged in, prompt a loggin
+			FB.getLoginStatus(function(response) {
+  				if (response.status === 'connected') {
+  					console.log("User is already logged in")
+  					getFriendsLocationsPoints();
+  				} else {
+  		 			$('#loginModal').modal('show')
+ 		 		}
+	 		});
+
 		  </script>
 
 		  <!-- Navbar -->
@@ -84,37 +104,48 @@
 		  		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 		  			<span class="icon-bar"></span>
 		  			<span class="icon-bar"></span>
+		  			<span class="icon-bar"></span>
 		  		</button>
 
-		  		<a class="navbar-brand text-muted" href="#">Friend Map</a>
+		  		<a class="navbar-brand text-muted" href="#">Friendly Earth</a>
 		  		<div class="collapse navbar-collapse">
-		  			<button class="btn btn-default" data-toggle="modal" data-target="#myModal">
-		  					Launch demo modal
-		  				</button>
 		  			<ul class="nav navbar-nav navbar-right">
+		  				<li id='loginPane'><a href="#">Login</a></li>
 		  				<li class="active"><a href="#">Map</a></li>
-		  				<li><a href="#">About</a></li>
+		  				<li id='infoPane'><a href="#">About</a></li>
 		  			</ul>
-
 		  		</div>
 		  	</div>
 		  </div>
 		  <!-- End navbar -->
 
-		  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		  	<div class="modal-dialog">
 		  		<div class="modal-content">
 		  			<div class="modal-header">
 		  				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		  				<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+		  				<h4 class="modal-title" id="myModalLabel">Login</h4>
 		  			</div>
 		  			<div class="modal-body">
 		  				<button id="Login" class="btn btn-default testButtons"> Log In </button> 
-		  				<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 
-		  				<button id="LoadList" class="btn btn-default testButtons"> Load List</button> 
-		  				<button id="LoadMyLocation" class="btn btn-default testButtons"> Load My Location</button> 
-		  				<button id="LoadFriendsLocations" class="btn btn-default testButtons"> Load Friends Locations</button> 
+		  				<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 		  			</div>
+		  			<div class="modal-footer">
+		  				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 		  			</div>
+		  		</div>
+		  	</div>
+		  </div>
+
+		  <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  	<div class="modal-dialog">
+		  		<div class="modal-content">
+		  			<div class="modal-header">
+		  				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		  				<h4 class="modal-title" id="myModalLabel">About</h4>
+		  			</div>
+		  			<div class="modal-body">
+		  				Info Text Here
+		  				</div>
 		  			<div class="modal-footer">
 		  				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 		  			</div>
@@ -134,10 +165,14 @@
 	  					});
 	  				};
 
-	  				document.getElementById("LoadList").onclick = loadFriendList;
+	  				document.getElementById("loginPane").onclick = function(){
+	  					$('#loginModal').modal('show');
+	  				};
 
-	  				document.getElementById("LoadMyLocation").onclick = getMyLocationPoints;
-	  				document.getElementById("LoadFriendsLocations").onclick = getFriendsLocationsPoints;
+	  				document.getElementById("infoPane").onclick = function(){
+	  					$('#infoModal').modal('show');
+	  				};
+
 	  			</script>
 	  		</div>
 	  	</body>

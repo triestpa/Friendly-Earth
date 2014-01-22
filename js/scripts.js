@@ -7,28 +7,14 @@ function login() {
 						console.log('Good to see you, ' + response.name + '.');
 						console.log('Your location is ' + response.location.name  + '.');
 					});
+					getMyLocationPoints();
+					getFriendsLocationsPoints();
+					$('#loginModal').modal('hide')
 				} else {
 					console.log('User cancelled login or did not fully authorize.');
 				}
 			}, {scope: 'user_location, friends_location'});
 		}
-
-
-//Load the facebook friend list and insert it into the html
-function loadFriendList() {
-			var friendList_HTML = "";
-
-			FB.api('me/friends', function(response) {
-				$.each(response.data,function(index,friend) {
-					FB.api(friend.id, function(response) {
-						friendList_HTML += "<a href=\"#\" class=\"list-group-item\">" + friend.name + '  lives in  ' + response.location.name + '.' + "</a>";
-						console.log(friend.name + '  lives in  ' + response.location.name + '.');
-						$("#friendList").html(friendList_HTML);
-					});
-				});
-			});
-		}
-
 
 var map;
 var center;
@@ -103,6 +89,14 @@ function initialize() {
 
 		google.maps.event.addListener(markerCluster, 'click', function(cluster) {
 				var markers = cluster.getMarkers();
+
+				//sort markers by name
+				markers.sort(function(a, b){
+    				if(a.name < b.name) return -1;
+   					if(a.name > b.name) return 1;
+   					return 0;
+					});
+
 				var people = "<div class=markerCluster list-group>";
     			//Get all the titles
     			for(var i = 0; i < markers.length; i++) {
@@ -134,8 +128,7 @@ function addMarker(lat, lng, location, person){
 		//windowContent = '<div id="windowContent"> <p class="text-center">' + '  ' + person + '</p></div>'
 		Latlng = new google.maps.LatLng(lat, lng);
 
-		//windowContent = '<a href=' + person.link + ' target=_blank> <li class=list-group-item nameText>' + person.name + '</a></li>';
-		windowContent = '<a class=list-group-item nameText href=' + person.link + ' target=_blank>' + person.name + '</a>';
+		windowContent = '<a class=list-group-item href=' + person.link + ' target=_blank>' + person.name + '</a>';
 
 		var markerImage = { 
 				url :"http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m1.png",
@@ -154,8 +147,16 @@ function addMarker(lat, lng, location, person){
 				icon: markerImage
 			});
 		marker['bubbleRow'] = windowContent;
+		marker['name'] = person.name;
+
 		markers.push(marker);
 		markerCluster.addMarker(marker);
+}
+
+
+//add unlocated friend to "Unable to Locate" list
+function addUnlocated(friend){
+
 }
 
 
@@ -176,7 +177,7 @@ function getFriendsLocationsPoints() {
 	FB.api('me/friends', {fields: 'name, location, link'}, function(response) {
 		$.each(response.data,function(index,friend) {
 				if (typeof friend.location === "undefined") {
-					console.log("Cannot access the location of " + friend.name);
+					addUnlocated(friend);
 				}
 				else {
 					findLocation(friend);

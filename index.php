@@ -127,11 +127,12 @@
 		  				<h4 class="modal-title" id="myModalLabel">Login</h4>
 		  			</div>
 		  			<div class="modal-body">
+		  				<p class="lead"> Welcome to Friendly-Earth</p>
+		  				<p> This webapp will allow you to view your Facebook friends on a map. Try it out!</p>
+		  				<p>All of your personal data will be stored within your browser window, and deleted when you leave.<p>
 		  				<button id="Login" class="btn btn-default testButtons"> Log In </button> 
 		  				<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 		  			</div>
-		  			<div class="modal-footer">
-		  				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		  			</div>
+		  			<div class="modal-footer"> </div>
 		  		</div>
 		  	</div>
 		  </div>
@@ -144,11 +145,23 @@
 		  				<h4 class="modal-title" id="myModalLabel">About</h4>
 		  			</div>
 		  			<div class="modal-body">
-		  				Info Text Here
-		  				</div>
-		  			<div class="modal-footer">
-		  				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		  			</div>
+		  				<div class="row">
+							<div class="col-sm-4">
+							  	<h2> Share </h2>
+							  	<p> If you like this website please share it!</p>
+							</div>
+							<div class="col-sm-4">
+							  	<h2> Privacy </h2>
+							  	<p>I will not store, share, or sell any of your personal data. Ever. </p> 
+							</div>
+							<div class="col-sm-4">
+							  	<h2> Contact </h2>
+							  	<p> This website was created by Patrick Triest</p>
+							  	<p> Contact Info can go here</p>
+							</div>
+							</div>
+						</div>
+		  			<div class="modal-footer"> </div>
 		  		</div>
 		  	</div>
 		  </div>
@@ -174,6 +187,5 @@
 	  				};
 
 	  			</script>
-	  		</div>
 	  	</body>
 	  	</html>

@@ -21,6 +21,7 @@ var center;
 var markers = [];
 var markerCluster;
 var infoBubble_prev = new InfoBubble();
+var unlocated = [];
 
 //Initialize the google map
 function initialize() {
@@ -109,7 +110,7 @@ function initialize() {
           			maxWidth: 300,
           			padding: 0,
           			borderWidth: 2,
-          			disableAutoPan: true,
+          			disableAutoPan: false,
           			hideCloseButton: true,
           			content: people
         			});
@@ -156,7 +157,7 @@ function addMarker(lat, lng, location, person){
 
 //add unlocated friend to "Unable to Locate" list
 function addUnlocated(friend){
-
+	unlocated.push(friend);
 }
 
 

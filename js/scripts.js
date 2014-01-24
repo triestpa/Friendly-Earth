@@ -9,7 +9,7 @@ function login() {
 					});
 					getMyLocationPoints();
 					getFriendsLocationsPoints();
-					$('#loginModal').modal('hide')
+					$('#loginModal').modal('hide');
 				} else {
 					console.log('User cancelled login or did not fully authorize.');
 				}
@@ -21,6 +21,20 @@ var center;
 var markers = [];
 var markerCluster;
 var infoBubble_prev = new InfoBubble();
+var unlocated = [];
+var currentUser;
+
+function setDisplayedName() {
+	if (typeof currentUser.name === "undefined") {
+		$('#userLink').html("unknown");
+	}
+	else if (currentUser == null) {
+		$('#userLink').html("nobody");
+	}
+	else
+		$('#userLink').html(currentUser.name);
+		$('#userLink').attr("href", currentUser.link);
+}
 
 //Initialize the google map
 function initialize() {
@@ -109,7 +123,7 @@ function initialize() {
           			maxWidth: 300,
           			padding: 0,
           			borderWidth: 2,
-          			disableAutoPan: true,
+          			disableAutoPan: false,
           			hideCloseButton: true,
           			content: people
         			});
@@ -156,13 +170,15 @@ function addMarker(lat, lng, location, person){
 
 //add unlocated friend to "Unable to Locate" list
 function addUnlocated(friend){
-
+	unlocated.push(friend);
 }
 
 
 //Get the location of the user and mark it on the map
 function getMyLocationPoints() {
 			FB.api('/me', {fields: 'name, location, link'}, function(response) {
+				currentUser = response;
+				setDisplayedName;
 				console.log('Hello, ' + response.name + '.'); 
 				var location = response.location.name;    
 				console.log('Your location is ' +  location + '.');

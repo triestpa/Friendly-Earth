@@ -22,22 +22,6 @@ var markers = [];
 var markerCluster;
 var infoBubble_prev = new InfoBubble();
 var unlocated = [];
-<<<<<<< HEAD
-var currentUser;
-
-function setDisplayedName() {
-	if (typeof currentUser.name === "undefined") {
-		$('#userLink').html("unknown");
-	}
-	else if (currentUser == null) {
-		$('#userLink').html("nobody");
-	}
-	else
-		$('#userLink').html(currentUser.name);
-		$('#userLink').attr("href", currentUser.link);
-}
-=======
->>>>>>> 55ca87b5840f8a272df722ec3342f4cbd0dd0fb4
 
 //Initialize the google map
 function initialize() {
@@ -180,8 +164,6 @@ function addUnlocated(friend){
 //Get the location of the user and mark it on the map
 function getMyLocationPoints() {
 			FB.api('/me', {fields: 'name, location, link'}, function(response) {
-				currentUser = response;
-				setDisplayedName;
 				console.log('Hello, ' + response.name + '.'); 
 				var location = response.location.name;    
 				console.log('Your location is ' +  location + '.');

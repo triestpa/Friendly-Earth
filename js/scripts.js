@@ -22,6 +22,7 @@ var markers = [];
 var markerCluster;
 var infoBubble_prev = new InfoBubble();
 var unlocated = [];
+<<<<<<< HEAD
 var currentUser;
 
 function setDisplayedName() {
@@ -35,6 +36,8 @@ function setDisplayedName() {
 		$('#userLink').html(currentUser.name);
 		$('#userLink').attr("href", currentUser.link);
 }
+=======
+>>>>>>> 55ca87b5840f8a272df722ec3342f4cbd0dd0fb4
 
 //Initialize the google map
 function initialize() {

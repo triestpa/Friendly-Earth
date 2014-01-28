@@ -1,27 +1,45 @@
-//Log in to facebook
-function login() {
-			FB.login(function(response) {
-				if (response.authResponse) {
-					console.log('Welcome!  Fetching your information.... ');
-					FB.api('/me', function(response) {
-						console.log('Good to see you, ' + response.name + '.');
-						console.log('Your location is ' + response.location.name  + '.');
-					});
-					getMyLocationPoints();
-					getFriendsLocationsPoints();
-					$('#loginModal').modal('hide');
-				} else {
-					console.log('User cancelled login or did not fully authorize.');
-				}
-			}, {scope: 'user_location, friends_location'});
-		}
-
 var map;
 var center;
 var markers = [];
 var markerCluster;
 var infoBubble_prev = new InfoBubble();
 var unlocated = [];
+var currentUser;
+var loggedin = false;
+
+//Log in to facebook
+function login() {
+		if (loggedin == false) {
+			FB.login(function(response) {
+				if (response.authResponse) {
+					FB.api('/me', function(response) {
+						console.log('Good to see you, ' + response.name + '.');
+						console.log('Your location is ' + response.location.name  + '.');
+						loggedin = true;
+					});
+					getMyLocationPoints();
+					getFriendsLocationsPoints();
+					$('#loginModal').modal('hide');
+					$("#Login").html("Logout");
+				} else {
+					console.log('User cancelled login or did not fully authorize.');
+				}
+			}, {scope: 'user_location, friends_location'});
+		}
+		else console.log("Location Points Already Loaded")
+	}
+
+function setDisplayedName() {
+	if (typeof currentUser.name === "undefined") {
+		$('#userLink').html("unknown");
+	}
+	else if (currentUser == null) {
+		$('#userLink').html("nobody");
+	}
+	else
+		$('#userLink').html(currentUser.name);
+		$('#userLink').attr("href", currentUser.link);
+}
 
 //Initialize the google map
 function initialize() {
@@ -164,6 +182,8 @@ function addUnlocated(friend){
 //Get the location of the user and mark it on the map
 function getMyLocationPoints() {
 			FB.api('/me', {fields: 'name, location, link'}, function(response) {
+				currentUser = response;
+				setDisplayedName;
 				console.log('Hello, ' + response.name + '.'); 
 				var location = response.location.name;    
 				console.log('Your location is ' +  location + '.');

@@ -94,17 +94,6 @@
 		     firstScriptElement.parentNode.insertBefore(facebookJS, firstScriptElement);
 		 }());
 
-		  	//if user is not yet logged in, prompt a loggin
-			FB.getLoginStatus(function(response) {
-  				if (response.status === 'connected') {
-  					console.log("User is already logged in")
-  					getFriendsLocationsPoints();
-
-  				} else {
-  		 			$('#loginModal').modal('show')
- 		 		}
-	 		});
-
 			(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
 			  if (d.getElementById(id)) return;
@@ -149,7 +138,6 @@
 		  				<p> This webapp will allow you to view your Facebook friends on a map. Try it out!</p>
 		  				<p>All of your personal data will be stored within your browser window, and deleted when you leave.<p>
 		  				<button id="Login" class="btn btn-primary testButtons"> Log In With Facebook</button> 
-		  				<button id="Logout" class="btn btn-default testButtons"> Log Out </button> 		  			
 		  			</div>
 		  			<div class="modal-footer"> </div>
 		  		</div>
@@ -167,7 +155,7 @@
 		  				<div class="row">
 							<div class="col-sm-4">
 							  	<h2> Share </h2>
-							  	<p> If you like this website please share it!</p>
+							  	<p> Share this website with your friends!</p>
 							  	<div class="fb-like" data-href="http://friendly-earth.com/" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
 								</div>
 							<div class="col-sm-4">
@@ -176,8 +164,9 @@
 							</div>
 							<div class="col-sm-4">
 							  	<h2> Contact </h2>
-							  	<p> This website was created by Patrick Triest</p>
-							  	<p> Contact Info can go here</p>
+							  	<p>This website was built by
+							  	<a href="mailto:patrick.triest@gmail.com">Patrick Triest</a>
+							  	</p>
 							</div>
 							</div>
 						</div>
@@ -189,17 +178,33 @@
 		  <div id="map_canvas"></div>
 
 		  		<script>
-
 		  		// Wait for the page to load first
         		window.onload = function() {
 
-	  				//Set the buttons
-	  				document.getElementById("Login").onclick = login;
+				  	//if user is not yet logged in, prompt a loggin
+					FB.getLoginStatus(function(response) {
+		  				if (response.status === 'connected') {
+		  					console.log("User is already logged in")
+		  					$("#Login").html("Logout");
+		  					getMyLocationPoints();
+		  					getFriendsLocationsPoints();
+		  				} else {
+		  		 			$('#loginModal').modal('show')
+		 		 		}
+			 		});
 
-	  				document.getElementById("Logout").onclick = function(){
-	  					FB.logout(function(response) {
+	  				//Set the buttons
+	  				document.getElementById("Login").onclick = function(){
+	  					if ($("#Login").html() == "Logout"){
+	  						FB.logout(function(response) {
 	  						console.log("User is logged out");
-	  					});
+	  						$("#Login").html("Login With Facebook");
+	  							});
+	  						}
+	  					else {
+	  					login();
+	  					$("#Login").html("Logout");
+	  					}
 	  				};
 
 	  				document.getElementById("loginPane").onclick = function(){
@@ -217,4 +222,3 @@
 
 	  			</script>
 	  	</body>
-	  	</html>

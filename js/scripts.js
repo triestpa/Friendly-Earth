@@ -20,7 +20,6 @@ function login() {
 					getMyLocationPoints();
 					getFriendsLocationsPoints();
 					$('#loginModal').modal('hide');
-					$("#Login").html("Logout");
 				} else {
 					console.log('User cancelled login or did not fully authorize.');
 				}
@@ -172,6 +171,10 @@ function addMarker(lat, lng, location, person){
 		markerCluster.addMarker(marker);
 }
 
+//clear all markers from the map
+function clearMap(){
+	markerCluster.clearMarkers();
+}
 
 //add unlocated friend to "Unable to Locate" list
 function addUnlocated(friend){

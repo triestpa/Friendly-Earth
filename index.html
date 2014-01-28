@@ -35,23 +35,12 @@
 				google.maps.event.addDomListener(map, 'idle', function(){
 					center = map.getCenter();
 				});
+			});
 
-				//if user is not yet logged in, prompt a loggin
-				FB.getLoginStatus(function(response) {
-	  				if (response.status === 'connected') {
-	  					console.log("User is already logged in")
-	  					getMyLocationPoints();
-	  					getFriendsLocationsPoints();
-		  				} else {
-	  		 			$('#loginModal').modal('show')
-		 		 		}
-			 		});
-				});
-
-				$(window).resize(function(){
-					map.setCenter(center);
-					$("#map_canvas").height($(window).height() - 50);
-				});
+			$(window).resize(function(){
+				map.setCenter(center);
+				$("#map_canvas").height($(window).height() - 50);
+			});
 	</script>
 
 
@@ -72,7 +61,18 @@
 		  });
 
 	    	// Additional initialization code such as adding Event Listeners goes here
-
+	    	
+	    	//if user is not yet logged in, prompt a loggin
+			FB.getLoginStatus(function(response) {
+	  			if (response.status === 'connected') {
+	  				console.log("User is already logged in")
+	  				$("#Login").html("Logout of Facebook");
+	  				getMyLocationPoints();
+	  				getFriendsLocationsPoints();
+		  			} else {
+	  		 		$('#loginModal').modal('show')
+		 		 	}
+			 	});
 	    };
 
 		  // Load the SDK asynchronously
@@ -181,29 +181,18 @@
 		  		// Wait for the page to load first
         		window.onload = function() {
 
-				  	//if user is not yet logged in, prompt a loggin
-					FB.getLoginStatus(function(response) {
-		  				if (response.status === 'connected') {
-		  					console.log("User is already logged in")
-		  					$("#Login").html("Logout");
-		  					getMyLocationPoints();
-		  					getFriendsLocationsPoints();
-		  				} else {
-		  		 			$('#loginModal').modal('show')
-		 		 		}
-			 		});
-
 	  				//Set the buttons
 	  				document.getElementById("Login").onclick = function(){
 	  					if ($("#Login").html() == "Logout"){
 	  						FB.logout(function(response) {
+	  						clearMap();
 	  						console.log("User is logged out");
 	  						$("#Login").html("Login With Facebook");
 	  							});
 	  						}
 	  					else {
 	  					login();
-	  					$("#Login").html("Logout");
+	  					$("#Login").html("Logout of Facebook");
 	  					}
 	  				};
 

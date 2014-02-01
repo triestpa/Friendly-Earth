@@ -35,12 +35,13 @@
 				google.maps.event.addDomListener(map, 'idle', function(){
 					center = map.getCenter();
 				});
-			});
+
 
 			$(window).resize(function(){
 				map.setCenter(center);
 				$("#map_canvas").height($(window).height() - 50);
 			});
+		});
 	</script>
 
 
@@ -136,8 +137,9 @@
 		  			<div class="modal-body">
 		  				<p class="lead"> Welcome to Friendly-Earth</p>
 		  				<p> This webapp will allow you to view your Facebook friends on a map. Try it out!</p>
-		  				<p>All of your personal data will be stored within your browser window, and deleted when you leave.<p>
-		  				<button id="Login" class="btn btn-primary testButtons"> Log In With Facebook</button> 
+		  				<div class="centered">
+		  					<button id="Login" class="btn btn-primary testButtons"> Log In With Facebook</button> 
+		  				</div>
 		  			</div>
 		  			<div class="modal-footer"> </div>
 		  		</div>
@@ -160,7 +162,7 @@
 								</div>
 							<div class="col-sm-4">
 							  	<h2> Privacy </h2>
-							  	<p>I will not ever store, share, or sell any of your personal data wihtout your permission.</p> 
+							  	<p>I will not ever store, share, or sell any of your personal data without your permission.</p> 
 							</div>
 							<div class="col-sm-4">
 							  	<h2> Contact </h2>
@@ -183,7 +185,7 @@
 
 	  				//Set the buttons
 	  				document.getElementById("Login").onclick = function(){
-	  					if ($("#Login").html() == "Logout"){
+	  					if ($("#Login").html() == "Logout of Facebook"){
 	  						FB.logout(function(response) {
 	  						clearMap();
 	  						console.log("User is logged out");
@@ -205,9 +207,6 @@
 	  					$('#infoModal').modal('show');
 	  					return false;
 	  				};
-
-
 	  			};
-
 	  			</script>
 	  	</body>

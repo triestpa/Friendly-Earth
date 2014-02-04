@@ -178,6 +178,32 @@ function clearMap(){
 
 //add unlocated friend to "Unable to Locate" list
 function addUnlocated(friend){
+
+	Latlng = new google.maps.LatLng(0, 0);
+	windowContent = '<a class=list-group-item href=' + person.link + ' target=_blank>' + person.name + '</a>';
+
+	var markerImage = { 
+				url :"http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m1.png",
+                size : new google.maps.Size(50, 50),
+                origin : new google.maps.Point(0, 0),
+                anchor : new google.maps.Point(27,27)
+            };
+
+	//Add Location to map
+	var marker = new google.maps.Marker({
+			position: Latlng,
+			//	animation: google.maps.Animation.DROP,
+			map: map,
+			title: person.name,
+			anchorPoint: new google.maps.Point(0,0),
+			icon: markerImage
+		});
+	marker['bubbleRow'] = windowContent;
+	marker['name'] = person.name;
+
+	markers.push(marker);
+	unlocatedCluster.addMarker(marker);
+
 	unlocated.push(friend);
 }
 

@@ -77,9 +77,11 @@
 	    		if (response.status === 'connected') {
 	    			console.log("User is already logged in")
 	    			$("#Login").html("Logout of Facebook");
+	    			$("#LoginModal").html("Logout");
 	    			getMyLocationPoints();
 	    			getFriendsLocationsPoints();
 	    		} else {
+	    			$('#loginPane a').html('Logout');
 	    			$('#loginModal').modal('show')
 	    		}
 	    	});
@@ -134,16 +136,16 @@
 		  </div>
 		  <!-- End navbar -->
 
-		  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="LoginModal" aria-hidden="true">
 		  	<div class="modal-dialog">
 		  		<div class="modal-content">
 		  			<div class="modal-header">
 		  				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		  				<h4 class="modal-title" id="myModalLabel">Login</h4>
+		  				<h4 class="modal-title" id="LoginModal">Login</h4>
 		  			</div>
 		  			<div class="modal-body">
 		  				<p class="lead"> Welcome to Friendly-Earth</p>
-		  				<p> This webapp will allow you to view your Facebook friends on a map. Try it out!</p>
+		  				<p> This webapp will plot your Facebook friend network on an interactive map. Try it out!</p>
 		  				<div class="centered">
 		  					<button id="Login" class="btn btn-primary testButtons"> Log In With Facebook</button> 
 		  				</div>
@@ -153,12 +155,12 @@
 		  	</div>
 		  </div>
 
-		  <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="AboutModal" aria-hidden="true">
 		  	<div class="modal-dialog">
 		  		<div class="modal-content">
 		  			<div class="modal-header">
 		  				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		  				<h4 class="modal-title" id="myModalLabel">About</h4>
+		  				<h4 class="modal-title" id="AboutModal">About</h4>
 		  			</div>
 		  			<div class="modal-body">
 		  				<div class="row">
@@ -174,9 +176,7 @@
 		  					</div>
 		  					<div class="col-sm-4">
 		  						<h2> Contact </h2>
-		  						<p>This website was built by
-		  							<a href="mailto:patrick.triest@gmail.com">Patrick Triest</a>
-		  						</p>
+		  						<p>I'm Patrick Triest, if you have any feedback or questions about this site send me an <a href="mailto:patrick.triest@gmail.com">email</a>.</p>
 		  					</div>
 		  				</div>
 		  			</div>
